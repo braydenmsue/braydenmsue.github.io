@@ -1,0 +1,86 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Button from "../../components/Button.astro";
+import ProjectImage from "../../components/ProjectImage.astro";
+import Tag from "../../components/Tag.astro";
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props as { project: CollectionEntry<"projects"> };
+const { title, summary, image, tags, challenges, live_url, repo_url } = project.data;
+const { Content } = await render(project);
+const hasBody = Boolean(project.body?.trim());
+const h2 = "mt-10 mb-3 text-lg font-bold text-gray-900 dark:text-slate-100";
+---
+
+<Base title={title} description={summary ?? title}>
+  <article class="max-w-3xl mx-auto px-4 sm:px-6 py-14">
+    <a href="/projects/" class="text-sm text-gray-500 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400"
+      >← All projects</a
+    >
+
+    <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-gray-900 dark:text-slate-100 tracking-tight">{title}</h1>
+    {summary && <p class="mt-3 text-lg text-gray-600 dark:text-slate-400 leading-relaxed">{summary}</p>}
+
+    <div class="mt-8 rounded-xl overflow-hidden ring-1 ring-gray-200 dark:ring-slate-800">
+      <ProjectImage title={title} image={image} class="aspect-video" />
+    </div>
+
+    {
+      tags.length > 0 && (
+        <>
+          <h2 class={h2}>Technologies Used</h2>
+          <div class="flex flex-wrap gap-2">
+            {tags.map((t) => <Tag>{t}</Tag>)}
+          </div>
+        </>
+      )
+    }
+
+    {
+      challenges.length > 0 && (
+        <>
+          <h2 class={h2}>Challenges &amp; Solutions</h2>
+          <div class="space-y-4">
+            {challenges.map((item, i) => (
+              <div class="text-sm leading-relaxed">
+                <p>
+                  <span class="font-semibold text-gray-900 dark:text-slate-100">Challenge {i + 1}:</span>{" "}
+                  {item.challenge}
+                </p>
+                <p class="mt-1">
+                  <span class="font-semibold text-gray-900 dark:text-slate-100">Solution:</span> {item.solution}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
+      )
+    }
+
+    {
+      hasBody && (
+        <>
+          <h2 class={h2}>Project Details</h2>
+          <div class="prose prose-slate dark:prose-invert max-w-none prose-a:text-blue-600 dark:prose-a:text-blue-400">
+            <Content />
+          </div>
+        </>
+      )
+    }
+
+    {
+      (live_url || repo_url) && (
+        <div class="mt-10 flex flex-wrap gap-3">
+          {live_url && <Button href={live_url} external>Live Demo ↗</Button>}
+          {repo_url && <Button href={repo_url} variant="secondary" external>Repository ↗</Button>}
+        </div>
+      )
+    }
+  </article>
+</Base>

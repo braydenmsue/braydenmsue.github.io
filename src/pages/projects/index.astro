@@ -1,0 +1,24 @@
+---
+import Base from "../../layouts/Base.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import SectionHeading from "../../components/SectionHeading.astro";
+import { getSortedProjects } from "../../lib/content";
+import { NAME } from "../../site";
+
+const projects = await getSortedProjects();
+---
+
+<Base title="Projects" description={`Projects by ${NAME}`}>
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+    <SectionHeading>Featured Projects</SectionHeading>
+    {
+      projects.length > 0 ? (
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      ) : (
+        <p class="text-center text-gray-500 dark:text-slate-500">No projects yet.</p>
+      )
+    }
+  </section>
+</Base>

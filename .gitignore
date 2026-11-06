@@ -205,3 +205,9 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Astro / Node
+node_modules/
+dist/
+.astro/
+.DS_Store

@@ -1,0 +1,82 @@
+---
+import { existsSync } from "node:fs";
+import Base from "../layouts/Base.astro";
+import Button from "../components/Button.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import Tag from "../components/Tag.astro";
+import { EDUCATION, EXPERIENCE, NAME, RESUME_FILE, SKILLS } from "../site";
+
+// Builds run from the project root, so this resolves to public/<file>.
+const hasResume = existsSync(`public/${RESUME_FILE}`);
+const card = "bg-white dark:bg-slate-900 rounded-xl ring-1 ring-gray-200 dark:ring-slate-800 shadow-sm p-5";
+const h3 = "text-lg font-bold text-gray-900 dark:text-slate-100 mb-4";
+const isEmpty = !EXPERIENCE.length && !EDUCATION.length && !SKILLS.length;
+---
+
+<Base title="Experience" description={`Resume and experience of ${NAME}`}>
+  <section class="max-w-3xl mx-auto px-4 sm:px-6 py-16">
+    <SectionHeading>Resume &amp; Experience</SectionHeading>
+
+    {
+      EXPERIENCE.length > 0 && (
+        <>
+          <h3 class={h3}>Work Experience</h3>
+          <div class="space-y-4 mb-12">
+            {EXPERIENCE.map((job) => (
+              <div class={card}>
+                <p class="font-semibold text-gray-900 dark:text-slate-100">{job.role}</p>
+                <p class="text-sm text-gray-500 dark:text-slate-500">
+                  {job.company} · {job.dates}
+                </p>
+                {job.points && job.points.length > 0 && (
+                  <ul class="mt-3 list-disc pl-5 space-y-1 text-sm leading-relaxed">
+                    {job.points.map((point) => <li>{point}</li>)}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      )
+    }
+
+    {
+      EDUCATION.length > 0 && (
+        <>
+          <h3 class={h3}>Education</h3>
+          <div class="space-y-4 mb-12">
+            {EDUCATION.map((item) => (
+              <div class={card}>
+                <p class="font-semibold text-gray-900 dark:text-slate-100">{item.degree}</p>
+                <p class="text-sm text-gray-500 dark:text-slate-500">
+                  {item.school} · {item.dates}
+                </p>
+              </div>
+            ))}
+          </div>
+        </>
+      )
+    }
+
+    {
+      SKILLS.length > 0 && (
+        <>
+          <h3 class={h3}>Skills</h3>
+          <div class:list={[card, "flex flex-wrap gap-2 mb-12"]}>
+            {SKILLS.map((s) => <Tag>{s}</Tag>)}
+          </div>
+        </>
+      )
+    }
+
+    {isEmpty && <p class="text-center text-gray-500 dark:text-slate-500 mb-12">Details coming soon.</p>}
+
+    {
+      hasResume && (
+        <div class="text-center">
+          <Button href={`/${RESUME_FILE}`} variant="success" external>Download Full Resume ↓</Button>
+        </div>
+      )
+    }
+  </section>
+</Base>

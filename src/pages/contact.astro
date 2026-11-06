@@ -1,0 +1,65 @@
+---
+import Base from "../layouts/Base.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { NAME, SOCIAL_LINKS, WEB3FORMS_ACCESS_KEY } from "../site";
+
+const redirectUrl = new URL("/thanks/", Astro.site).href;
+const label = "block text-sm font-medium text-gray-900 dark:text-slate-200 mb-1";
+const field =
+  "w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-950 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-600";
+---
+
+<Base title="Contact" description={`Get in touch with ${NAME}`}>
+  <section class="max-w-xl mx-auto px-4 sm:px-6 py-16">
+    <SectionHeading>Get in Touch</SectionHeading>
+
+    <div class="bg-white dark:bg-slate-900 rounded-xl ring-1 ring-gray-200 dark:ring-slate-800 shadow-sm p-6">
+      {
+        WEB3FORMS_ACCESS_KEY ? (
+          <form action="https://api.web3forms.com/submit" method="POST" class="space-y-4">
+            <input type="hidden" name="access_key" value={WEB3FORMS_ACCESS_KEY} />
+            <input type="hidden" name="redirect" value={redirectUrl} />
+            <input type="hidden" name="from_name" value={`${NAME} website`} />
+            <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+
+            <div>
+              <label for="name" class={label}>Name</label>
+              <input id="name" name="name" type="text" required autocomplete="name" placeholder="Your name" class={field} />
+            </div>
+            <div>
+              <label for="email" class={label}>Email</label>
+              <input id="email" name="email" type="email" required autocomplete="email" placeholder="you@example.com" class={field} />
+            </div>
+            <div>
+              <label for="subject" class={label}>Subject</label>
+              <input id="subject" name="subject" type="text" required placeholder="What's this about?" class={field} />
+            </div>
+            <div>
+              <label for="message" class={label}>Message</label>
+              <textarea id="message" name="message" rows="6" required placeholder="Your message here…" class={field} />
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2.5 rounded-md transition-colors"
+            >
+              Send Message
+            </button>
+          </form>
+        ) : (
+          <p class="text-sm text-gray-600 dark:text-slate-400 text-center">
+            The contact form isn't set up yet.
+            {SOCIAL_LINKS.email && (
+              <>
+                In the meantime, email me at{" "}
+                <a href={`mailto:${SOCIAL_LINKS.email}`} class="text-blue-600 dark:text-blue-400 hover:underline">
+                  {SOCIAL_LINKS.email}
+                </a>
+                .
+              </>
+            )}
+          </p>
+        )
+      }
+    </div>
+  </section>
+</Base>

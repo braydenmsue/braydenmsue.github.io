@@ -1,0 +1,28 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Toggle dark mode with a `dark` class on <html> (set in Base.astro) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Code blocks — supplement prose plugin defaults */
+pre {
+  overflow-x: auto;
+}
+
+pre code {
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+/* Drop the backticks the typography plugin adds around inline code */
+.prose :not(pre) > code::before,
+.prose :not(pre) > code::after {
+  content: "";
+}

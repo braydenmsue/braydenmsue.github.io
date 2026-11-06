@@ -1,0 +1,24 @@
+---
+interface Props {
+  title: string;
+  image?: string;
+  class?: string;
+}
+
+const { title, image, class: className } = Astro.props;
+---
+
+{
+  image ? (
+    <img src={`/${image}`} alt={title} class:list={["w-full object-cover", className]} />
+  ) : (
+    <div
+      class:list={[
+        "w-full flex items-center justify-center bg-gradient-to-br from-blue-100 to-gray-200 dark:from-slate-800 dark:to-slate-900",
+        className,
+      ]}
+    >
+      <span class="text-4xl font-bold text-blue-300 dark:text-slate-700">{title.slice(0, 1)}</span>
+    </div>
+  )
+}

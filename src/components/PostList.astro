@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "../lib/content";
+
+interface Props {
+  posts: CollectionEntry<"posts">[];
+  /** "compact" for the homepage sidebar, "full" for the blog index */
+  size?: "compact" | "full";
+}
+
+const { posts, size = "full" } = Astro.props;
+const compact = size === "compact";
+const Title = compact ? "p" : "h2";
+---
+
+<div class="divide-y divide-gray-200 dark:divide-slate-800">
+  {
+    posts.map((post) => (
+      <a href={`/blog/${post.id}/`} class:list={["block group", compact ? "py-3.5" : "py-5"]}>
+        <div class:list={["flex items-baseline justify-between", compact ? "gap-4" : "gap-6"]}>
+          <Title
+            class:list={[
+              "group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors",
+              compact
+                ? "font-medium text-gray-800 dark:text-slate-200"
+                : "font-semibold text-gray-900 dark:text-slate-100",
+            ]}
+          >
+            {post.data.title}
+          </Title>
+          <span class="text-xs text-gray-500 dark:text-slate-500 shrink-0">{formatDate(post.data.date)}</span>
+        </div>
+        {post.data.summary && (
+          <p
+            class:list={[
+              "text-sm",
+              compact
+                ? "text-gray-500 dark:text-slate-500 mt-0.5"
+                : "text-gray-600 dark:text-slate-400 mt-1 leading-relaxed",
+            ]}
+          >
+            {post.data.summary}
+          </p>
+        )}
+      </a>
+    ))
+  }
+</div>
